@@ -10,9 +10,11 @@ import { userAuthContext } from "../store/AuthContext";
 export default function HomePage() {
   const [userWallet, setUserWallet] = useState({});
   const { userData } = useContext(userAuthContext);
-
   const navigate = useNavigate();
+
   useEffect(() => {
+    if (!userData.token) navigate("/");
+
     axios.get(`${import.meta.env.VITE_API_URL}/home`, {
       headers: {
         Authorization: `Bearer ${userData.token}`,
@@ -26,11 +28,18 @@ export default function HomePage() {
       })
   }, []);
 
+  const handleLogOff = () => {
+    localStorage.removeItem("my_wallet_user_logged");
+    navigate("/");
+  };
+
   return (
     <HomeContainer>
       <Header>
         <h1>Olá, {userData.nome}</h1>
-        <BiExit />
+        <BiExit onClick={handleLogOff} style={{
+          cursor: "pointer",
+        }} />
       </Header>
 
       {
@@ -38,7 +47,7 @@ export default function HomePage() {
         <TransactionsContainer>
           <ul>
             {userWallet.transactions?.map(t => (
-              <ListItemContainer key={`${t.description}-${t.value}-${t.date}`}>
+              <ListItemContainer key={t._id}>
                 <div>
                   <span>{t.date}</span>
                   <strong>{t.description}</strong>
@@ -46,7 +55,7 @@ export default function HomePage() {
                 <Value color={t.type === "entrada"
                   ? "positivo"
                   : "negativo"}
-                >{t.value.toFixed(2)}</Value>
+                >{Number(t.value).toFixed(2)}</Value>
               </ListItemContainer>
             ))}
           </ul>
@@ -98,6 +107,7 @@ const TransactionsContainer = styled.article`
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  overflow-y: scroll;
   article {
     display: flex;
     justify-content: space-between;
