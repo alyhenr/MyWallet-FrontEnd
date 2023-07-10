@@ -25,7 +25,7 @@ export default function SignUpPage() {
     delete user.conf;
     axios.post(`${import.meta.env.VITE_API_URL}/cadastro`, user)
       .then(() => { navigate("/"); })
-      .catch(err => console.log(err.response.data));
+      .catch(err => { console.log(err); alert(err.response.data); });
   };
 
   return (
@@ -37,28 +37,32 @@ export default function SignUpPage() {
         )}>
         <MyWalletLogo />
         <input
+          data-test="name"
           name="nome"
           placeholder="Nome"
           type="text"
         />
         <input
+          data-test="email"
           name="email"
           placeholder="E-mail"
-          type="email"
+          type="text"
         />
         <input
+          data-test="password"
           name="senha"
           placeholder="Senha"
           type="password"
           autoComplete="new-password"
         />
         <input
+          data-test="conf-password"
           name="conf"
           placeholder="Confirme a senha"
           type="password"
           autoComplete="new-password"
         />
-        <button>Cadastrar</button>
+        <button data-test="sign-up-submit">Cadastrar</button>
       </form>
 
       <Link to={"/"}>

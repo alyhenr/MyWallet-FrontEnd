@@ -19,7 +19,7 @@ export default function SignInPage() {
         setUserData(res.data);
         navigate("/home");
       })
-      .catch(err => console.log(err.response.data));
+      .catch(err => { console.log(err.response.data); alert(err.response.data) });
   }
   return (
     <SingInContainer>
@@ -32,17 +32,19 @@ export default function SignInPage() {
       >
         <MyWalletLogo />
         <input
+          data-test="email"
           name="email"
           placeholder="E-mail"
-          type="email"
+          type="text"
         />
         <input
+          data-test="password"
           name="senha"
           placeholder="Senha"
           type="password"
           autoComplete="new-password"
         />
-        <button>Entrar</button>
+        <button data-test="sign-in-submit">Entrar</button>
       </form>
 
       <Link to={"/cadastro"}>

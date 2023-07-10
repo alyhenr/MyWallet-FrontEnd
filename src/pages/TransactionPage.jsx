@@ -12,14 +12,13 @@ export default function TransactionsPage() {
     description: "",
   });
   const navigate = useNavigate();
-
+  const action = location.pathname.split("/")[2];
   useEffect(() => { if (!userData.token) navigate("/"); }, []);
 
   const handleSubmit = ev => {
     ev.preventDefault();
-
-    if (Number(newTransaction.value) != newTransaction.value) { alert("O valor da transação deve conter apenas números"); return; }
-    if (newTransaction.description.length === 0) { alert("Fornece uma descrição."); return; }
+    if (!newTransaction.value.length) { alert("Insira um valor diferente de 0."); return; }
+    if (newTransaction.description.length === 0) { alert("Forneça uma descrição."); return; }
 
     axios.post(`${import.meta.env.VITE_API_URL + location.pathname}`,
       { ...newTransaction, value: parseFloat(newTransaction.value) },
@@ -27,7 +26,7 @@ export default function TransactionsPage() {
         headers: { "Authorization": `Bearer ${userData.token}` }
       })
       .then(res => { console.log(res.data, res.status); navigate("/home"); })
-      .catch(err => console.log(err.message))
+      .catch(err => { console.log(err.message); alert(err.message.data); })
   };
 
   return (
@@ -37,9 +36,9 @@ export default function TransactionsPage() {
         onChange={ev => setNewTransaction(prev => ({ ...prev, [ev.target.name]: ev.target.value }))}
         onSubmit={ev => handleSubmit(ev)}
       >
-        <input placeholder="Valor" type="text" name="value" />
-        <input placeholder="Descrição" type="text" name="description" />
-        <button>Salvar TRANSAÇÃO</button>
+        <input data-test="registry-amount-input" placeholder="Valor" type="text" name="value" />
+        <input data-test="registry-name-input" placeholder="Descrição" type="text" name="description" />
+        <button data-test="registry-save">Salvar {action === "saida" && "saída" || action}</button>
       </form>
     </TransactionsContainer>
   )

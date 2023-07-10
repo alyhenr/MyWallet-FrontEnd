@@ -36,8 +36,8 @@ export default function HomePage() {
   return (
     <HomeContainer>
       <Header>
-        <h1>Olá, {userData.nome}</h1>
-        <BiExit onClick={handleLogOff} style={{
+        <h1 data-test="user-name">Olá, {userData.nome}</h1>
+        <BiExit data-test="logout" onClick={handleLogOff} style={{
           cursor: "pointer",
         }} />
       </Header>
@@ -50,31 +50,31 @@ export default function HomePage() {
               <ListItemContainer key={t._id}>
                 <div>
                   <span>{t.date}</span>
-                  <strong>{t.description}</strong>
+                  <strong data-test="registry-name">{t.description}</strong>
                 </div>
-                <Value color={t.type === "entrada"
+                <Value data-test="registry-amount" color={t.type === "entrada"
                   ? "positivo"
                   : "negativo"}
-                >{Number(t.value).toFixed(2)}</Value>
+                >{Number(t.value).toFixed(2).replace(".", ",")}</Value>
               </ListItemContainer>
             ))}
           </ul>
 
           <article>
             <strong>Saldo</strong>
-            <Value color={userWallet.total > 0
-              ? "positivo" : "negativo"}>{userWallet.total.toFixed(2)}</Value>
+            <Value data-test="total-amount" color={userWallet.total > 0
+              ? "positivo" : "negativo"}>{userWallet.total.toFixed(2).replace(".", ",")}</Value>
           </article>
         </TransactionsContainer>
       }
 
 
       <ButtonsContainer>
-        <button onClick={() => navigate("/nova-transacao/entrada")}>
+        <button data-test="new-income" onClick={() => navigate("/nova-transacao/entrada")}>
           <AiOutlinePlusCircle />
           <p>Nova <br /> entrada</p>
         </button>
-        <button onClick={() => navigate("/nova-transacao/saida")}>
+        <button data-test="new-expense" onClick={() => navigate("/nova-transacao/saida")}>
           <AiOutlineMinusCircle />
           <p>Nova <br />saída</p>
         </button>
@@ -108,9 +108,18 @@ const TransactionsContainer = styled.article`
   flex-direction: column;
   justify-content: space-between;
   overflow-y: scroll;
+  position: relative;
   article {
     display: flex;
     justify-content: space-between;
+    position: sticky;
+    bottom: -16px;
+    left: 0px;
+    width: 100%;
+    height: 2000px;
+    margin-top: 10px;
+    padding: 5px 0px;
+    background-color: #fff;
     strong {
       font-weight: 700;
       text-transform: uppercase;
