@@ -45,6 +45,10 @@ export default function HomePage() {
     }
   };
 
+  const handleUpdate = (value, description, type, id) => {
+    navigate(`/editar-registro/${type}/${id}`, { state: { value, description } });
+  }
+
   return (
     <HomeContainer>
       <Header>
@@ -62,7 +66,10 @@ export default function HomePage() {
               <ListItemContainer key={t._id}>
                 <div>
                   <span>{t.date}</span>
-                  <strong data-test="registry-name">{t.description}</strong>
+                  <strong
+                    data-test="registry-name"
+                    onClick={() => handleUpdate(t.value, t.description, t.type, t._id)}
+                  >{t.description}</strong>
                 </div>
                 <div style={{
                   display: "flex",
@@ -73,7 +80,7 @@ export default function HomePage() {
                     ? "positivo"
                     : "negativo"}
                   >{Number(t.value).toFixed(2).replace(".", ",")}</Value>
-                  <h6 style={{
+                  <h6 data-test="registry-delete" style={{
                     color: " #C6C6C6",
                     textShadow: "0px 4px 4px 0px rgba(0, 0, 0, 0.25)",
                     fontSize: "16px",
@@ -185,5 +192,8 @@ const ListItemContainer = styled.li`
   div span {
     color: #c6c6c6;
     margin-right: 10px;
+  }
+  div strong {
+    cursor: pointer;
   }
 `;
