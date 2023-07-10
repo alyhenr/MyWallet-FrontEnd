@@ -33,6 +33,18 @@ export default function HomePage() {
     navigate("/");
   };
 
+  const handleDeletion = (item_id) => {
+    if (window.confirm("Tem certeza que deseja deletar essa transação?")) {
+      axios.delete(`${import.meta.env.VITE_API_URL}/delete/${item_id}`, {
+        headers: {
+          Authorization: `Bearer ${userData.token}`,
+        }
+      })
+        .then(res => { console.log(res); location.reload(); })
+        .catch(err => console.log(err.response));
+    }
+  };
+
   return (
     <HomeContainer>
       <Header>
@@ -52,17 +64,30 @@ export default function HomePage() {
                   <span>{t.date}</span>
                   <strong data-test="registry-name">{t.description}</strong>
                 </div>
-                <Value data-test="registry-amount" color={t.type === "entrada"
-                  ? "positivo"
-                  : "negativo"}
-                >{Number(t.value).toFixed(2).replace(".", ",")}</Value>
+                <div style={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  gap: "8px",
+                }}>
+                  <Value data-test="registry-amount" color={t.type === "entrada"
+                    ? "positivo"
+                    : "negativo"}
+                  >{Number(t.value).toFixed(2).replace(".", ",")}</Value>
+                  <h6 style={{
+                    color: " #C6C6C6",
+                    textShadow: "0px 4px 4px 0px rgba(0, 0, 0, 0.25)",
+                    fontSize: "16px",
+                    cursor: "pointer",
+                    marginRight: "-10px"
+                  }} onClick={() => handleDeletion(t._id)}>x</h6>
+                </div>
               </ListItemContainer>
             ))}
           </ul>
 
           <article>
             <strong>Saldo</strong>
-            <Value data-test="total-amount" color={userWallet.total > 0
+            <Value data-test="total-amount" color={userWallet.total >= 0
               ? "positivo" : "negativo"}>{userWallet.total.toFixed(2).replace(".", ",")}</Value>
           </article>
         </TransactionsContainer>
@@ -80,7 +105,7 @@ export default function HomePage() {
         </button>
       </ButtonsContainer>
 
-    </HomeContainer>
+    </HomeContainer >
   )
 };
 

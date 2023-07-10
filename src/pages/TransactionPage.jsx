@@ -17,7 +17,7 @@ export default function TransactionsPage() {
 
   const handleSubmit = ev => {
     ev.preventDefault();
-    if (!newTransaction.value.length) { alert("Insira um valor diferente de 0."); return; }
+    if (!newTransaction.value.length) { alert("Insira um valor maior que 0."); return; }
     if (newTransaction.description.length === 0) { alert("Forneça uma descrição."); return; }
 
     axios.post(`${import.meta.env.VITE_API_URL + location.pathname}`,
@@ -26,7 +26,7 @@ export default function TransactionsPage() {
         headers: { "Authorization": `Bearer ${userData.token}` }
       })
       .then(res => { console.log(res.data, res.status); navigate("/home"); })
-      .catch(err => { console.log(err.message); alert(err.message.data); })
+      .catch(err => { console.log(err.response); alert(err.response.data); })
   };
 
   return (
